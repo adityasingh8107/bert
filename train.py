@@ -35,30 +35,30 @@ model.to(device)
 
 best_accuracy = 0.0
 
-for epoch in range(3):
-    model.train()
+model.train()
+for epoch in range(3):  # You can adjust the number of epochs
+    total_loss = 0.0
     for batch in train_loader:
-        inputs = {key: val.to(device) for key, val in batch.items() if key != 'labels'}
+        input_ids = batch['input_ids'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
         labels = batch['labels'].to(device)
-        outputs = model(**inputs, labels=labels)
+
+        # Forward pass
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
         loss = outputs.loss
+
+        # Backward pass
         loss.backward()
+        total_loss += loss.item()
+
+        # Update parameters
         optimizer.step()
         optimizer.zero_grad()
+
+    # Print average loss for each epoch
+    avg_train_loss = total_loss / len(train_loader)
+    print(f'Epoch {epoch + 1}, Average Training Loss: {avg_train_loss}')
     
-    model.eval()
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for batch in test_loader:
-            inputs = {key: val.to(device) for key, val in batch.items() if key != 'labels'}
-            labels = batch['labels'].to(device)
-            outputs = model(**inputs)
-            _, predicted = torch.max(outputs.logits, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
     accuracy = correct / total
     print(f'Epoch {epoch + 1}, Validation Accuracy: {accuracy}')
 

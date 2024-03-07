@@ -55,6 +55,9 @@ for epoch in range(3):  # You can adjust the number of epochs
         optimizer.step()
         optimizer.zero_grad()
 
+        if batch%10000 == 0:
+            print("Loss", total_loss)
+
     # Print average loss for each epoch
     avg_train_loss = total_loss / len(train_loader)
     print(f'Epoch {epoch + 1}, Average Training Loss: {avg_train_loss}')

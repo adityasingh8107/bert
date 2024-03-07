@@ -11,6 +11,7 @@ from datasets import load_dataset
 from torch.utils.data import DataLoader
 
 
+dataset = load_dataset('imdb')
 model_name = 'bert-base-uncased'
 tokenizer = BertTokenizer.from_pretrained(model_name)
 model = BertModel.from_pretrained(model_name)
@@ -19,7 +20,7 @@ model = BertModel.from_pretrained(model_name)
 def tokenize_batch(batch):
     return tokenizer(batch['text'], padding=True, truncation=True)
 
-# dataset = dataset.map(tokenize_batch, batched=True)
+dataset = dataset.map(tokenize_batch, batched=True)
 
 train_dataset = dataset['train']
 test_dataset = dataset['test']

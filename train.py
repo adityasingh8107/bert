@@ -19,7 +19,7 @@ model = BertModel.from_pretrained(model_name)
 def tokenize_batch(batch):
     return tokenizer(batch['text'], padding=True, truncation=True)
 
-dataset = datasets.map(tokenize_batch, batched=True)
+dataset = dataset.map(tokenize_batch, batched=True)
 
 train_dataset = dataset['train']
 test_dataset = dataset['test']
